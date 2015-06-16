@@ -13,7 +13,8 @@
 #define _TOP_GRAPH_MAIN_
 
 #define NODE_DISTANCE 10
-#define EDGE_MAX_DIST 25
+#define INTRA_NODE_DISTANCE 20
+#define EDGE_MAX_DIST 45
 
 class TopGraph
 {

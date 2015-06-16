@@ -74,10 +74,10 @@ void TopGraph::generateDenseGraph()
         {
             if( (int)binary_map.at<uchar>(i, j) == 255 )
             {
-                if((int)binary_map.at<uchar>(i-NODE_DISTANCE, j) == 0) continue;
-                if((int)binary_map.at<uchar>(i, j-NODE_DISTANCE) == 0) continue;
-                if((int)binary_map.at<uchar>(i+NODE_DISTANCE, j) == 0) continue;
-                if((int)binary_map.at<uchar>(i, j+NODE_DISTANCE) == 0) continue;
+                if((int)binary_map.at<uchar>(i-INTRA_NODE_DISTANCE, j) == 0) continue;
+                if((int)binary_map.at<uchar>(i, j-INTRA_NODE_DISTANCE) == 0) continue;
+                if((int)binary_map.at<uchar>(i+INTRA_NODE_DISTANCE, j) == 0) continue;
+                if((int)binary_map.at<uchar>(i, j+INTRA_NODE_DISTANCE) == 0) continue;
 
                 graph.push_back( new Node(graph.size(), cv::Point2f(j,i)) );
 
@@ -155,7 +155,7 @@ int main(int argc, char** argv)
 
     TopGraph tg(src, out_source);
     std::vector<cv::Point3f> waypoints;
-    tg.computePath(cv::Point3f(390,350,-M_PI/2), cv::Point3f(590,360,-M_PI+M_PI/4), &waypoints );
+//    tg.computePath(cv::Point3f(390,350,-M_PI/2), cv::Point3f(590,360,-M_PI+M_PI/4), &waypoints );
 
 
     tg.generateFileLP();

@@ -1,11 +1,12 @@
 <launch>
- <arg name="map_file" default="$(find adaptive_controller)/maps/map.yaml" />
+ <arg name="map_file" default="$(find way_point_navigation)/maps/DIAG_B1.png" />
+ <arg name="map_output" default="$(find adaptive_controller)/asp/map.lp" />
 
  <node
   pkg="adaptive_controller"
   type="irun.py"
   name="rosoclingo_controller"
-  args="$(arg map_file) $(find adaptive_controller)/asp/controller.lp"
+  args="$(arg map_file) $(arg map_output) $(find adaptive_controller)/asp/controller.lp"
   output="screen"
   required="true"
  />

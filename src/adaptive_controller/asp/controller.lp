@@ -2,26 +2,6 @@
 #program base.
 
 % problem instance
-node(1, 0, 0).
-node(2, 0, 0).
-node(3, 0, 0).
-node(4, 0, 0).
-node(5, 0, 0).
-
-edge(1, 5, 1).
-edge(1, 2, 1).
-
-edge(2, 1, 1).
-edge(2, 3, 1).
-
-edge(3, 2, 1).
-edge(3, 4, 1).
-
-edge(4, 3, 1).
-edge(4, 5, 1).
-
-edge(5, 4, 1).
-edge(5, 1, 1).
 
 holds(at(sBot, 1), 0).
 

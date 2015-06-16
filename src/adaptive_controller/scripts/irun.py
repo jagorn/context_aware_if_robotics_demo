@@ -8,7 +8,9 @@
 # to convert the messages received by the other components into ASP assertions
 
 import rospy
+import rospkg
 import sys
+import os
 from gringo import Fun
 import gringoParser
 from rosoclingoCommunication import RosoclingoCommunication
@@ -60,10 +62,17 @@ def context_to_solver(assertions2values):
 # ROS node
 # Controller main node:
 # argv[1] = map_file.yaml file
-# argv[2:] = knowledge.lp files
+# argv[2:] = map.lp file, populated by the graph builder online
+# argv[3:] = knowledge.lp files
 rospy.init_node('ROSoClingo', argv=sys.argv, anonymous=True)
 
 map_file = sys.argv[1]
+map_out = sys.argv[2]
+
+rospack = rospkg.RosPack()
+pkg_path = rospack.get_path('adaptive_controller')
+os.system(pkg_path + "/src/topologicalGraph/bin/top_graph_gen_bin -map " + map_file + " -out " + map_out)
+
 (arguments, files) = separate_parameter(rospy.myargv(sys.argv[2:]))
 
 handler = RosoclingoCommunication()
