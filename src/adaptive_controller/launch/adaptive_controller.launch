@@ -1,0 +1,17 @@
+<launch>
+  <include file="$(find adaptive_controller)/launch/controller.launch" />
+  <node
+    pkg="adaptive_controller"
+    type="contextNode.py"
+    name="context_middleware"
+    output="screen"
+    respawn="true"
+  />
+  <node
+    pkg="adaptive_controller"
+    type="testInput.py"
+    name="test_context_input"
+    output="screen"
+    respawn="true"
+  />
+</launch>

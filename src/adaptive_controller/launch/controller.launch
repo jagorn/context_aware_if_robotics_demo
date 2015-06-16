@@ -1,0 +1,27 @@
+<launch>
+
+ <node
+  pkg="adaptive_controller"
+  type="irun.py"
+  name="rosoclingo_controller"
+  args="$(find adaptive_controller)/asp/controller.lp"
+  output="screen"
+  required="true"
+ />
+
+ <node
+  pkg="adaptive_controller"
+  type="actionsFulfiller.py"
+  name="action_fulfiller"
+  output="screen"
+  respawn="true"
+ />
+
+ <node
+  pkg="adaptive_controller"
+  type="minimalRequest.py"
+  output="screen"
+  name="task_requester"
+ />
+
+</launch>

@@ -1,0 +1,33 @@
+#Install ROS Indigo (instructions at http://wiki.ros.org/indigo/Installation/Ubuntu)
+
+#Create ROS workspace
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+catkin_init_workspace
+cd ~/catkin_ws/
+catkin_make
+echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+#Install Turtlebot Nodes (instructions at http://wiki.ros.org/turtlebot/Tutorials/indigo/Installation)
+
+#Verify whether Turtlebot nodes have been correctly installed
+roslaunch turtlebot_bringup minimal.launch
+
+#Install Hokuyo laserscan
+sudo apt-get install ros-indigo-urg-node
+sudo apt-get install ros-indigo-hokuyo-node
+
+#Add a file named 40-hokuyo.rules in /etc/udev/rules.d/ with the following lines
+SUBSYSTEMS=="usb", KERNEL=="ttyACM[0-9]*", ACTION=="add", ATTRS{idVendor}=="15d1", ATTRS{idProduct}=="0000", MODE="666", SYMLINK+="sensors/hokuyo", GROUP="dialout"
+
+#Add the current user to the group "dialout"
+sudo usermod -a -G dialout turtlebot
+
+#Install Xtion drivers
+sudo apt-get install ros-indigo-openni2-launch
+
+#Check if the Xtion works
+roslaunch openni2_launch openni2.launch
+
+
