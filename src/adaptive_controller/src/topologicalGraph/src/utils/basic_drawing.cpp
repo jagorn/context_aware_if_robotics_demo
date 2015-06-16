@@ -62,7 +62,7 @@ void drawRobot(cv::Mat img, unsigned int r_id, cv::Point3f pose, cv::Scalar colo
     number(img, r_id, r_pos, cv::Scalar::all(0));
 }
 
-void drawPath(cv::Mat img, std::vector<cv::Point3f>* path, float thickness)
+void drawPath(cv::Mat img, std::vector<cv::Point3f>* path, cv::Scalar color, float thickness)
 {
     if(path->size() == 1)
     {
@@ -87,7 +87,7 @@ void drawPath(cv::Mat img, std::vector<cv::Point3f>* path, float thickness)
             if(tn == (path->size()-1))
                 cv::circle( img, p2, 2, CV_RGB(0,0,255), CV_FILLED );
 
-            cv::line( img, p1, p2, CV_RGB(0,255,0), thickness, 1 );
+            cv::line( img, p1, p2, color, thickness, 1 );
         }
     }
 }

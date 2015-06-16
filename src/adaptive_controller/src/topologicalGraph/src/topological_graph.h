@@ -7,13 +7,13 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "utils/utils_proximity.h"
-#include "utils/a_star.h"
+#include "./utils/utils_proximity.h"
+#include "./utils/a_star.h"
 
 #define _TOP_GRAPH_MAIN_
 
-#define NODE_DISTANCE 10
-#define INTRA_NODE_DISTANCE 20
+#define INTRA_NODE_DISTANCE 10
+#define NODE_DISTANCE 20
 #define EDGE_MAX_DIST 45
 
 class TopGraph

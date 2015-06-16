@@ -19,13 +19,17 @@ void TopGraph::vis()
         for(unsigned int e=0; e<graph.at(i)->edges.size(); ++e)
         {
             cv::line(vis, graph.at(i)->pos, graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos, CV_RGB(0,255,0), 1);
-            cv::Point2f tmp_edge = cv::Point2f((graph.at(i)->pos.x + graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos.x)/2, (graph.at(i)->pos.y + graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos.y)/2);
+//            cv::Point2f tmp_edge = cv::Point2f((graph.at(i)->pos.x + graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos.x)/2, (graph.at(i)->pos.y + graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos.y)/2);
 
-            Utils::number(vis, graph.at(i)->edges.at(e)->cost, tmp_edge, CV_RGB(0,0,0), cv::Point2f(2,2));
+//            Utils::number(vis, graph.at(i)->edges.at(e)->cost, tmp_edge, CV_RGB(0,0,0), cv::Point2f(2,2));
         }
 
         cv::circle( vis, graph.at(i)->pos, 3, CV_RGB(0,0,255), CV_FILLED );
     }
+
+    std::vector<cv::Point3f> waypoints;
+    computePath(cv::Point3f(300,480,-M_PI/2), cv::Point3f(590,360,-M_PI+M_PI/4), &waypoints );
+    Utils::drawPath(vis, &waypoints, CV_RGB(255,0,0), 1);
 
     cv::imshow("vis",vis);
     cv::waitKey(0);
@@ -153,13 +157,12 @@ int main(int argc, char** argv)
 
     if(argv[3]) out_source = argv[4];
 
-    TopGraph tg(src, out_source);
-    std::vector<cv::Point3f> waypoints;
-//    tg.computePath(cv::Point3f(390,350,-M_PI/2), cv::Point3f(590,360,-M_PI+M_PI/4), &waypoints );
 
+
+    TopGraph tg(src, out_source);
 
     tg.generateFileLP();
-//    tg.vis();
+    tg.vis();
 
 
     return 0;
