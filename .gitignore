@@ -1,0 +1,6 @@
+src/CMakeLists.txt.user
+.catkin_workspace
+.idea/
+build/
+devel/
+

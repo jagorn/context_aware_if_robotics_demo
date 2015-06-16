@@ -1,10 +1,11 @@
 <launch>
+ <arg name="map_file" default="$(find adaptive_controller)/maps/map.yaml" />
 
  <node
   pkg="adaptive_controller"
   type="irun.py"
   name="rosoclingo_controller"
-  args="$(find adaptive_controller)/asp/controller.lp"
+  args="$(arg map_file) $(find adaptive_controller)/asp/controller.lp"
   output="screen"
   required="true"
  />

@@ -2,22 +2,26 @@
 #program base.
 
 % problem instance
-room(1..5).
+node(1, 0, 0).
+node(2, 0, 0).
+node(3, 0, 0).
+node(4, 0, 0).
+node(5, 0, 0).
 
-door(1, 5).
-door(1, 2).
+edge(1, 5, 1).
+edge(1, 2, 1).
 
-door(2, 1).
-door(2, 3).
+edge(2, 1, 1).
+edge(2, 3, 1).
 
-door(3, 2).
-door(3, 4).
+edge(3, 2, 1).
+edge(3, 4, 1).
 
-door(4, 3).
-door(4, 5).
+edge(4, 3, 1).
+edge(4, 5, 1).
 
-door(5, 4).
-door(5, 1).
+edge(5, 4, 1).
+edge(5, 1, 1).
 
 holds(at(sBot, 1), 0).
 
@@ -27,13 +31,13 @@ robot(sBot).
 value(success; failure).
 
 % actions 
-action(moveTo(Room)) :- room(Room).
+action(moveTo(Room)) :- node(Room, _, _).
 
 % situations
-state(at(Robot, Room)) :- room(Room), robot(Robot).
+state(at(Robot, Room)) :- node(Room, _, _), robot(Robot).
 
 % context
-context(doorClosed(A,B)) :- door(A, B).
+context(doorClosed(A,B)) :- edge(A, B, _).
 #external _context(Context): context(Context).
 
 % TIME RULES
@@ -49,7 +53,7 @@ context(doorClosed(A,B)) :- door(A, B).
 _action(Robot, Action, t) :- _value(Robot, Action, Value, t).
 :- _action(Robot, Action, t), not possible(Robot, Action, t), not _value(Robot, Action, success, t).
 
-possible(Robot, moveTo(B), t) :- holds(at(Robot, A), t-1), door(A, B), robot(Robot), not _context(doorClosed(A,B)).
+possible(Robot, moveTo(B), t) :- holds(at(Robot, A), t-1), edge(A, B, _), robot(Robot), not _context(doorClosed(A,B)).
 
 holds(at(Robot, B), t) :- _action(Robot, moveTo(B), t), not _value(Robot, _, failure,t).
 holds(at(Robot, B), t) :- holds(at(Robot, B), t-1), not _action(Robot, moveTo(_), t).

@@ -58,8 +58,14 @@ def context_to_solver(assertions2values):
     return context
 
 # ROS node
+# Controller main node:
+# argv[1] = map_file.yaml file
+# argv[2:] = knowledge.lp files
 rospy.init_node('ROSoClingo', argv=sys.argv, anonymous=True)
-(arguments, files) = separate_parameter(rospy.myargv(sys.argv[1:]))
+
+map_file = sys.argv[1]
+(arguments, files) = separate_parameter(rospy.myargv(sys.argv[2:]))
+
 handler = RosoclingoCommunication()
 publisher = rospy.Publisher(handler.out_topic, handler.out_message, latch=True, queue_size=10)
 handle_communication = iroshandler.HandleCommunication(publisher, handler.in_topic, handler.in_message, message_to_solver)
