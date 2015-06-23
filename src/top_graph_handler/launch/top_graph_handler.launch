@@ -1,0 +1,14 @@
+<launch>
+    <arg name="robot_name" default="robot0" />
+	<arg name="out_lp_file" default="test.lp" />
+	
+	<group ns="$(arg robot_name)">
+		<node name="top_graph_handler" pkg="top_graph_handler" type="top_graph_handler"> 
+			<param name="robot_name" value="$(arg robot_name)"/>
+			<param name="out_lp_file" value="$(arg out_lp_file)"/>
+			
+		</node>
+
+	</group>
+<!--launch-prefix="xterm -e"-->
+</launch>
