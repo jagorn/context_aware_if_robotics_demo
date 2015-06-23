@@ -34,7 +34,7 @@ public:
         {
             bool operator()(Node left, Node right) const
             {
-                if(left.score != right.score)return left.score < right.score;
+                if(left.f_score != right.f_score)return left.f_score < right.f_score;
                 else return left.id <= right.id;
             }
 

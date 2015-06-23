@@ -1,0 +1,14 @@
+digraph G {
+"turtlebot/base_link" -> "turtlebot/base_laser_link"[label="Broadcaster: /stageros\nAverage rate: 10.204 Hz\nMost recent transform: 35.000 ( 0.000 sec old)\nBuffer length: 4.900 sec\n"];
+"turtlebot/base_footprint_frame" -> "turtlebot/base_link"[label="Broadcaster: /stageros\nAverage rate: 10.204 Hz\nMost recent transform: 35.000 ( 0.000 sec old)\nBuffer length: 4.900 sec\n"];
+"turtlebot/odom" -> "turtlebot/base_footprint_frame"[label="Broadcaster: /stageros\nAverage rate: 10.204 Hz\nMost recent transform: 35.000 ( 0.000 sec old)\nBuffer length: 4.900 sec\n"];
+"robot0/base_link" -> "robot0/base_frame"[label="Broadcaster: /robot0/link_broadcaster_2\nAverage rate: 10.204 Hz\nMost recent transform: 35.000 ( -0.000 sec old)\nBuffer length: 4.900 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 35.000"[ shape=plaintext ] ;
+ }->"turtlebot/odom";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 35.000"[ shape=plaintext ] ;
+ }->"robot0/base_link";
+}

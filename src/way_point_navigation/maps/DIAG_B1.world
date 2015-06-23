@@ -55,10 +55,3 @@ define box model
 
 #box( pose [ 14.023 1.896 0.000 0.000 ] color "red")
 
-# throw in a robot
-turtlebot
-(
-  pose [ 2.0 2.0 0.0 0.0 ]
-  name "turtlebot"
-  color "black"
-)

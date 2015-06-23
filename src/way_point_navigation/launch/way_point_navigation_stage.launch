@@ -38,8 +38,8 @@
 	    <!--remap from="way_point_navigation/base_pose_ground_truth" to="base_pose_ground_truth" /-->
 		<remap from="way_point_navigation/base_pose_ground_truth" to="amcl_pose" /> 
     	<remap from="way_point_navigation/Results" to="move_base/result" />
-   		<remap from="way_point_navigation/PointsListString" to="r_coordination/targetPose" /> 
-	    <remap from="way_point_navigation/CommandLoad" to="r_coordination/commandLoad" />
+   		<remap from="way_point_navigation/PointsListString" to="top_graph_handler/targetPose" /> 
+	    <remap from="way_point_navigation/CommandLoad" to="top_graph_handler/commandLoad" />
 
         <!-- AMCL -->
         <node pkg="amcl" type="amcl" name="amcl" respawn="true">
