@@ -1,5 +1,0 @@
-<launch>
-  <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
-    <arg name="world_name"  default="$(find turtlebot_setup)/worlds/dis-B1-2011-09-27.world"/>
-  </include>
-</launch>

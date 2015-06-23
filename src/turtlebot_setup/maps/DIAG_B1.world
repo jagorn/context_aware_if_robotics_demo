@@ -1,5 +1,6 @@
 include "urg.inc"
 include "erratic.inc"
+include "turtlebot.inc"
 
 define floorplan model
 (

@@ -25,7 +25,7 @@ def execute():
     #rospy.loginfo('MinimalRequest - request %s sent\n', request1)
     #rospy.sleep(2.0)
 
-    request2 = 'at(sBot,2)'
+    request2 = 'at(sBot,40)'
     goal2 = client.send_goal(communication.goal(request2))
     rospy.loginfo('MinimalRequest - request %s sent\n', request2)
     rospy.sleep(2.0)
