@@ -10,7 +10,8 @@
 #include "./utils/utils_proximity.h"
 #include "./utils/a_star.h"
 
-#define _TOP_GRAPH_MAIN_
+//#define _TOP_GRAPH_MAIN_
+//#define VIS_NODE_ID
 
 #define INTRA_NODE_DISTANCE 10
 #define NODE_DISTANCE 20
@@ -22,10 +23,13 @@ public:
     TopGraph(cv::Mat img, std::string _output_file_name = " ");
     ~TopGraph(){}
 
+    void updateContextCosts(std::vector<std::vector<float> > *costs_weights);
     void computePath(cv::Point3f start_node, cv::Point3f end_node, std::vector<cv::Point3f>* _path);
-    void vis();
+    void vis(cv::Mat vis);
 
     void generateFileLP();
+
+    inline unsigned int getNodeNum(){ return graph.size(); }
 
 private:
 

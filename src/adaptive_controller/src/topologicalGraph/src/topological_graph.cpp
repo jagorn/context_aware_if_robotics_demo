@@ -9,20 +9,13 @@ TopGraph::TopGraph(cv::Mat img, std::string _output_file_name)
     generateDenseGraph();
 }
 
-void TopGraph::vis()
+void TopGraph::vis(cv::Mat vis)
 {
-    cv::Mat vis;
     cv::cvtColor(map, vis, CV_GRAY2RGB);
-
     for(unsigned int i=0; i< graph.size(); ++i)
     {
         for(unsigned int e=0; e<graph.at(i)->edges.size(); ++e)
-        {
             cv::line(vis, graph.at(i)->pos, graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos, CV_RGB(0,255,0), 1);
-//            cv::Point2f tmp_edge = cv::Point2f((graph.at(i)->pos.x + graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos.x)/2, (graph.at(i)->pos.y + graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos.y)/2);
-
-//            Utils::number(vis, graph.at(i)->edges.at(e)->cost, tmp_edge, CV_RGB(0,0,0), cv::Point2f(2,2));
-        }
 
         cv::circle( vis, graph.at(i)->pos, 3, CV_RGB(0,0,255), CV_FILLED );
     }
@@ -32,7 +25,6 @@ void TopGraph::vis()
     Utils::drawPath(vis, &waypoints, CV_RGB(255,0,0), 1);
 
     cv::imshow("vis",vis);
-    cv::waitKey(0);
 }
 
 void TopGraph::generateFileLP()
@@ -46,7 +38,7 @@ void TopGraph::generateFileLP()
             out_file << "node("
                         + Utils::to_string(graph.at(n)->id) + ","
                         + Utils::to_string(graph.at(n)->pos.x) + ","
-                        + Utils::to_string(graph.at(n)->pos.y) +"). \n";
+                        + Utils::to_string(graph.at(n)->pos.y) +").\n";
         }
 
         out_file << "\n % Edges --------------------------- \n";
@@ -85,7 +77,9 @@ void TopGraph::generateDenseGraph()
 
                 graph.push_back( new Node(graph.size(), cv::Point2f(j,i)) );
 
-//                Utils::number(map, graph.size()-1, cv::Point2f(j,i));
+#ifdef VIS_NODE_ID
+                Utils::number(map, graph.size()-1, cv::Point2f(j,i));
+#endif
             }
         }
     }
@@ -117,17 +111,21 @@ void TopGraph::generateDenseGraph()
     astar_handler = new AstarHandler(astar_rep, astar_connections);
 }
 
+void TopGraph::updateContextCosts(std::vector<std::vector<float> >* costs_weights)
+{
+    astar_handler->setContextCosts(costs_weights);
+}
+
 void TopGraph::computePath(cv::Point3f start_node, cv::Point3f end_node, std::vector<cv::Point3f>* _path)
 {
-
-    std::vector<int> _pathId;
+    std::vector<int> pathId;
     astar_handler->findPath(
                 astar_handler->getClosetNodeId(cv::Point2f(start_node.x, start_node.y)),
                 astar_handler->getClosetNodeId(cv::Point2f(end_node.x, end_node.y)),
-                &_pathId );
+                &pathId );
 
-    for(unsigned int n=0; n<_pathId.size(); ++n)
-        _path->push_back(cv::Point3f(graph.at(_pathId.at(n))->pos.x, graph.at(_pathId.at(n))->pos.y, 0.f)); //TODO next node orientation
+    for(unsigned int n=0; n<pathId.size(); ++n)
+        _path->push_back(cv::Point3f(graph.at(pathId.at(n))->pos.x, graph.at(pathId.at(n))->pos.y, 0.f)); //TODO next node orientation
 
     return;
 }
@@ -161,8 +159,23 @@ int main(int argc, char** argv)
 
     TopGraph tg(src, out_source);
 
+    std::vector<std::vector<float> > test_costs;
+    for(unsigned int i=0; i<tg.getNodeNum(); ++i)
+    {
+        std::vector<float> tmp_test_costs(tg.getNodeNum(), 0.f);
+        for(unsigned int j=0; j<tmp_test_costs.size(); ++j)
+        {
+            if(j>=74 && j<=79) tmp_test_costs.at(j) = 100;
+            if(j>=68 && j<=71) tmp_test_costs.at(j) = 100;
+        }
+        test_costs.push_back(tmp_test_costs);
+    }
+    tg.updateContextCosts(&test_costs);
+
     tg.generateFileLP();
-    tg.vis();
+    cv::Mat vis;
+    tg.vis(vis);
+    //cv::waitKey(0);
 
 
     return 0;
