@@ -12,3 +12,5 @@ item(red, 30, 7).
 item(yellow, 2, 10).
 item(green, 14, -4).
 item(orange, 1, 1).
+
+mapMaxValues()
