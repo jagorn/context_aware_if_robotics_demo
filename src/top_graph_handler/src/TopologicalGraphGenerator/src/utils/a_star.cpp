@@ -159,14 +159,16 @@ bool AstarHandler::findPath(int s_id, int e_id, std::vector<int>* _path)
                 // if the neighbors of the current node has been closed already
                 if(isInSet(connections[current.id].at(n), &closed_set)) continue;
 
-                float tmp_g_score = graph.at(current.id)->g_score +
-                        Utils::norm2D(graph.at(current.id)->pos,
-                                           graph.at(connections[current.id].at(n))->pos);
+                float tmp_g_score = current.g_score +
+                        Utils::norm2D(current.pos, graph.at(connections[current.id].at(n))->pos);
 
                 // expansion step
                 if( !isInSet(connections[current.id].at(n), &open_set) ||
                         tmp_g_score < graph.at(connections[current.id].at(n))->g_score)
                 {
+                    std::map<int, Node*>::iterator remover = history.find(connections[current.id].at(n));
+                    if(remover != history.end()) history.erase(remover);
+
                     history.insert( std::make_pair<int,Node*>(connections[current.id].at(n), new Node(current.id,current.pos)) );
                     graph.at(connections[current.id].at(n))->g_score = tmp_g_score;
                     graph.at(connections[current.id].at(n))->f_score = tmp_g_score +
@@ -178,7 +180,6 @@ bool AstarHandler::findPath(int s_id, int e_id, std::vector<int>* _path)
                 }
             }
         }
-
     }
     // return failure
     return false;

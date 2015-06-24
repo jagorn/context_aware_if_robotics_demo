@@ -12,10 +12,11 @@
 
 //#define _TOP_GRAPH_MAIN_
 //#define VIS_NODE_ID
+//#define GENERATE_EDGES_LP
 
-#define INTRA_NODE_DISTANCE 10
-#define NODE_DISTANCE 20
-#define EDGE_MAX_DIST 45
+#define INTRA_NODE_DISTANCE 5
+#define NODE_DISTANCE 10
+#define EDGE_MAX_DIST 15
 
 class TopGraph
 {

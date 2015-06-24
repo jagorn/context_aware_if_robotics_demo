@@ -18,7 +18,7 @@ public:
     void operator=(const Point2f& p)
     {
        x = p.x;
-       y = p.x;
+       y = p.y;
     }
 
     inline float atan2(){ return std::atan2(y,x); }

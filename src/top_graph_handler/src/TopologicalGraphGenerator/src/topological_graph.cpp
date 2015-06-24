@@ -21,7 +21,7 @@ void TopGraph::vis(cv::Mat vis)
     }
 
     std::vector<cv::Point3f> waypoints;
-    computePath(cv::Point3f(300,480,-M_PI/2), cv::Point3f(590,360,-M_PI+M_PI/4), &waypoints );
+    computePath(cv::Point3f(300,480,-M_PI/2), cv::Point3f(740,80,-M_PI+M_PI/4), &waypoints );
     Utils::drawPath(vis, &waypoints, CV_RGB(255,0,0), 1);
 
     cv::imshow("vis",vis);
@@ -41,6 +41,7 @@ void TopGraph::generateFileLP()
                         + Utils::to_string(graph.at(n)->pos.y) +").\n";
         }
 
+#ifdef GENERATE_EDGES_LP
         out_file << "\n % Edges --------------------------- \n";
         for(unsigned n=0; n< graph.size(); ++n)
         {
@@ -52,6 +53,7 @@ void TopGraph::generateFileLP()
                             + Utils::to_string((int)graph.at(n)->edges.at(e)->cost) + ").\n";
             }
         }
+#endif
 
         out_file.close();
     }
@@ -165,8 +167,8 @@ int main(int argc, char** argv)
         std::vector<float> tmp_test_costs(tg.getNodeNum(), 0.f);
         for(unsigned int j=0; j<tmp_test_costs.size(); ++j)
         {
-            if(j>=74 && j<=79) tmp_test_costs.at(j) = 100;
-            if(j>=68 && j<=71) tmp_test_costs.at(j) = 100;
+            if(j>=105 && j<=112) tmp_test_costs.at(j) = 1000;
+            if(j>=133 && j<=142) tmp_test_costs.at(j) = 1000;
         }
         test_costs.push_back(tmp_test_costs);
     }
