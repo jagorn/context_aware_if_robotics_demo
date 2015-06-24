@@ -46,6 +46,7 @@ private:
 //    /// SUB -------------------------------
     ros::Subscriber map_sub;
     ros::Subscriber move_sub;
+    ros::Subscriber context_middleware_sub;
 
 //    /// VIS -------------------------------
     cv::Mat vis;
@@ -61,7 +62,7 @@ public:
 
     void mapSubscriber(const nav_msgs::OccupancyGrid::ConstPtr& _map);
     void moveSubscriber(const std_msgs::String::ConstPtr& _msg);
-    void dialogSubscriber(const std_msgs::String::ConstPtr& _msg);
+    void contextMidSubscriber(const std_msgs::String::ConstPtr& _msg);
 
     // main method
     void update();

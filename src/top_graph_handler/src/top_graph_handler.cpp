@@ -9,6 +9,8 @@ TopGraphHandler::TopGraphHandler(): n("~")
     map_sub = n.subscribe<nav_msgs::OccupancyGrid>("/map", 1000, &TopGraphHandler::mapSubscriber, this);
     move_sub = n.subscribe<std_msgs::String>("/" + robotname + "/way_point_navigation/feedbackMotion",
                                                  1000, &TopGraphHandler::moveSubscriber, this);
+    context_middleware_sub = n.subscribe<std_msgs::String>("/" + robotname + "/contextROI",
+                                                           1000, &TopGraphHandler::contextMidSubscriber, this);
 
     path_pub = n.advertise<std_msgs::String>("targetPose", 1000);
     controller_state_pub = n.advertise<std_msgs::String>("MoveControllerState", 1000);
@@ -92,6 +94,11 @@ void TopGraphHandler::moveSubscriber(const std_msgs::String::ConstPtr& _msg)
     state_to_publish.data = _msg->data;
 }
 
+void TopGraphHandler::contextMidSubscriber(const std_msgs::String::ConstPtr& _msg)
+{
+    // "id centroid p1 p2"
+}
+
 
 void TopGraphHandler::getRobotPose()
 {
@@ -121,7 +128,7 @@ void TopGraphHandler::update()
 
 //    if() //new task to start
     std::vector<cv::Point3f> waypoints;
-    theTopGraph->computePath(robot_pose, cv::Point3f(590,360,-M_PI+M_PI/4), &waypoints );
+    theTopGraph->computePath(robot_pose, cv::Point3f(760,80,-M_PI+M_PI/4), &waypoints );
 
     path_to_target.insert(std::make_pair<int, std::vector<cv::Point3f> >( 1, waypoints) );
 
