@@ -20,19 +20,29 @@
 
 class TopGraph
 {
+
 public:
-    TopGraph(cv::Mat img, std::string _output_file_name = " ");
-    ~TopGraph(){}
+    class Area
+    {
+    public:
+        int id;
+        std::string label;
+        cv::Point2f centroid;
+        float weight;
+        std::vector<float> params;
 
-    void updateContextCosts(std::vector<std::vector<float> > *costs_weights);
-    void computePath(cv::Point3f start_node, cv::Point3f end_node, std::vector<cv::Point3f>* _path);
-    void vis(cv::Mat vis);
-
-    void generateFileLP();
-
-    inline unsigned int getNodeNum(){ return graph.size(); }
-
-private:
+        Area(int _i, std::string _l, cv::Point2f _c, float _w, std::vector<float> _p):
+            id(_i), label(_l), centroid(_c), weight(_w), params(_p){}
+        Area(const Area& a)
+        {
+            id = a.id;
+            label = a.label;
+            centroid = a.centroid;
+            weight = a.weight;
+            params = a.params;
+        }
+        ~Area(){}
+    };
 
     class Node
     {
@@ -58,13 +68,29 @@ private:
         void setEdges(std::vector<TopGraph::Node::Edge*> _edges) { edges = _edges; }
     };
 
+    TopGraph(cv::Mat img, std::string _output_file_name = " ");
+    ~TopGraph(){}
+
+    void updateContextCosts(std::vector<float>* costs_weights);
+    void updateContextAreas(std::vector<Area>* _areas);
+    void computePath(cv::Point3f start_node, cv::Point3f end_node, std::vector<cv::Point3f>* _path);
+    void vis(cv::Mat vis);
+
+    void generateFileLP();
+
+    inline unsigned int getNodeNum(){ return graph.size(); }
+
+private:
     cv::Mat map;
     std::string output_file_name;
     std::vector<Node*> graph;
+    std::vector<Area> areas;
 
     AstarHandler* astar_handler;
 
     void generateDenseGraph();
+
+
 };
 
 

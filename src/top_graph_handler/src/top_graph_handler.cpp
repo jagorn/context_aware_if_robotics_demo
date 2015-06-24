@@ -46,6 +46,8 @@ void TopGraphHandler::visualize()
     cv::Mat vis;
     cv::cvtColor(map, vis, CV_GRAY2RGB);
 
+    theTopGraph->vis(vis);
+
     Utils::drawPath(vis, &path_to_target[1], CV_RGB(255,0,0), 1);
     Utils::drawRobot(vis, 1, robot_pose);
 
@@ -125,6 +127,23 @@ void TopGraphHandler::getRobotPose()
 void TopGraphHandler::update()
 {
     getRobotPose();
+    if(path_id == 0)
+    {
+        float weight = 100;
+        std::vector<TopGraph::Area> areas;
+
+        std::vector<float> param_circle(1,30);
+        areas.push_back( TopGraph::Area(areas.size(), "circle", cv::Point2f(500,350), weight, param_circle) );
+        areas.push_back( TopGraph::Area(areas.size(), "circle", cv::Point2f(600,350), weight, param_circle) );
+
+        std::vector<float> param_rect;
+        param_rect.push_back(50);
+        param_rect.push_back(30);
+        areas.push_back( TopGraph::Area(areas.size(), "rect", cv::Point2f(380,390), weight, param_rect) );
+
+
+        theTopGraph->updateContextAreas(&areas);
+    }
 
 //    if() //new task to start
     std::vector<cv::Point3f> waypoints;
