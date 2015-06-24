@@ -1,8 +1,8 @@
 <launch>
     <arg name="robot_name" default="robot0" />
-	<arg name="agentId" default="0"/>
-    <arg name="map_name"  default="DIAG_B1"/>
-	<arg name="init_x" default="10.0" />
+    <arg name="agentId" default="0"/>
+    <arg name="map_name"  default="if_adaptive"/>
+    <arg name="init_x" default="10.0" />
     <arg name="init_y" default="1.0" />
     <arg name="init_a" default="1.57" />
     <arg name="init_cov" default="0.25" />
@@ -113,6 +113,5 @@
 
 		<node name="link_broadcaster_2" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 /$(arg robot_name)/base_link /$(arg robot_name)/base_frame 0.2" />
     </group>
-
 </launch>
 
