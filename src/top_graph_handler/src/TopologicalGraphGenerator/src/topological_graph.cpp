@@ -11,7 +11,19 @@ TopGraph::TopGraph(cv::Mat img, std::string _output_file_name)
 
 void TopGraph::vis(cv::Mat vis)
 {
-    cv::cvtColor(map, vis, CV_GRAY2RGB);
+//    cv::cvtColor(map, vis, CV_GRAY2RGB);
+
+    for(unsigned int a=0; a<areas.size(); ++a)
+    {
+        if(areas.at(a).label=="circle")
+            Utils::drawCircleArea(vis, areas.at(a).id, areas.at(a).centroid,
+                                  areas.at(a).params.at(0), areas.at(a).weight);
+        else if(areas.at(a).label=="rect")
+            Utils::drawRectArea(vis, areas.at(a).id, areas.at(a).centroid,
+                                areas.at(a).params.at(0), areas.at(a).params.at(1), areas.at(a).weight);
+
+    }
+
     for(unsigned int i=0; i< graph.size(); ++i)
     {
         for(unsigned int e=0; e<graph.at(i)->edges.size(); ++e)
@@ -20,11 +32,10 @@ void TopGraph::vis(cv::Mat vis)
         cv::circle( vis, graph.at(i)->pos, 3, CV_RGB(0,0,255), CV_FILLED );
     }
 
-    std::vector<cv::Point3f> waypoints;
-    computePath(cv::Point3f(300,480,-M_PI/2), cv::Point3f(740,80,-M_PI+M_PI/4), &waypoints );
-    Utils::drawPath(vis, &waypoints, CV_RGB(255,0,0), 1);
-
-    cv::imshow("vis",vis);
+//    std::vector<cv::Point3f> waypoints;
+//    computePath(cv::Point3f(300,480,-M_PI/2), cv::Point3f(740,80,-M_PI+M_PI/4), &waypoints );
+//    Utils::drawPath(vis, &waypoints, CV_RGB(255,0,0), 1);
+//    cv::imshow("vis",vis);
 }
 
 void TopGraph::generateFileLP()
@@ -113,9 +124,41 @@ void TopGraph::generateDenseGraph()
     astar_handler = new AstarHandler(astar_rep, astar_connections);
 }
 
-void TopGraph::updateContextCosts(std::vector<std::vector<float> >* costs_weights)
+void TopGraph::updateContextCosts(std::vector<float>* costs_weights)
 {
     astar_handler->setContextCosts(costs_weights);
+}
+
+void TopGraph::updateContextAreas(std::vector<Area>* _areas)
+{
+    areas.clear();
+    for(unsigned int a=0; a<_areas->size(); ++a)
+        areas.push_back(Area(_areas->at(a).id, _areas->at(a).label,
+                             _areas->at(a).centroid, _areas->at(a).weight, _areas->at(a).params));
+
+
+    std::vector<float> additional_costs(graph.size(), 0.f);
+    for(unsigned int a=0; a<areas.size(); ++a)
+    {
+        for(unsigned int n=0; n<graph.size(); ++n)
+        {
+            if(areas.at(a).label == "rect")
+            {
+
+                if( std::fabs(graph.at(n)->pos.x - areas.at(a).centroid.x) < areas.at(a).params.at(0)/2 &&
+                        std::fabs(graph.at(n)->pos.y - areas.at(a).centroid.y) < areas.at(a).params.at(1)/2 )
+                    additional_costs.at(n) += areas.at(a).weight;
+            }
+
+            if(areas.at(a).label == "circle")
+            {
+                if(norm(graph.at(n)->pos - areas.at(a).centroid) < areas.at(a).params.at(0))
+                    additional_costs.at(n) += areas.at(a).weight;
+            }
+        }
+    }
+
+    updateContextCosts(&additional_costs);
 }
 
 void TopGraph::computePath(cv::Point3f start_node, cv::Point3f end_node, std::vector<cv::Point3f>* _path)

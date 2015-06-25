@@ -69,19 +69,7 @@ float AstarHandler::heuristicCostEstimate(Node* ni, Node* ne)
     // eucledian distance
     return Utils::norm2D(ni->pos, ne->pos);
 #else
-    float tmp_context_value = 0.f;
-    for(unsigned int i=0; i<context_costs.size(); ++i)
-    {
-        for(unsigned int j=0; j<context_costs.at(i).size(); ++j)
-        {
-            if(context_costs.at(i).at(j) != 0.f && ni->id == (int) j)
-            {
-                tmp_context_value = context_costs.at(i).at(j);
-                break;
-            }
-        }
-    }
-    return Utils::norm2D(ni->pos, ne->pos) + tmp_context_value;
+    return Utils::norm2D(ni->pos, ne->pos) + context_costs.at(ni->id);
 #endif
 }
 
@@ -118,11 +106,10 @@ void AstarHandler::retracePath(int c_id, int s_id, std::vector<int>* _path)
      std::reverse(_path->begin(), _path->end());
 }
 
-void AstarHandler::setContextCosts(std::vector<std::vector<float> >* _ncc)
+void AstarHandler::setContextCosts(std::vector<float> *_ncc)
 {
     for(unsigned int i=0; i<_ncc->size(); ++i)
-        for(unsigned int j=0; j<_ncc->at(i).size(); ++j)
-            context_costs.at(i).at(j) = _ncc->at(i).at(j);
+            context_costs.at(i) = _ncc->at(i);
 }
 
 bool AstarHandler::findPath(int s_id, int e_id, std::vector<int>* _path)

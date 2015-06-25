@@ -9,6 +9,8 @@ TopGraphHandler::TopGraphHandler(): n("~")
     map_sub = n.subscribe<nav_msgs::OccupancyGrid>("/map", 1000, &TopGraphHandler::mapSubscriber, this);
     move_sub = n.subscribe<std_msgs::String>("/" + robotname + "/way_point_navigation/feedbackMotion",
                                                  1000, &TopGraphHandler::moveSubscriber, this);
+    context_middleware_sub = n.subscribe<std_msgs::String>("/" + robotname + "/contextROI",
+                                                           1000, &TopGraphHandler::contextMidSubscriber, this);
 
     path_pub = n.advertise<std_msgs::String>("targetPose", 1000);
     controller_state_pub = n.advertise<std_msgs::String>("MoveControllerState", 1000);
@@ -43,6 +45,8 @@ void TopGraphHandler::visualize()
 {
     cv::Mat vis;
     cv::cvtColor(map, vis, CV_GRAY2RGB);
+
+    theTopGraph->vis(vis);
 
     Utils::drawPath(vis, &path_to_target[1], CV_RGB(255,0,0), 1);
     Utils::drawRobot(vis, 1, robot_pose);
@@ -92,6 +96,11 @@ void TopGraphHandler::moveSubscriber(const std_msgs::String::ConstPtr& _msg)
     state_to_publish.data = _msg->data;
 }
 
+void TopGraphHandler::contextMidSubscriber(const std_msgs::String::ConstPtr& _msg)
+{
+    // "id centroid p1 p2"
+}
+
 
 void TopGraphHandler::getRobotPose()
 {
@@ -118,10 +127,27 @@ void TopGraphHandler::getRobotPose()
 void TopGraphHandler::update()
 {
     getRobotPose();
+    if(path_id == 0)
+    {
+        float weight = 100;
+        std::vector<TopGraph::Area> areas;
+
+        std::vector<float> param_circle(1,30);
+        areas.push_back( TopGraph::Area(areas.size(), "circle", cv::Point2f(500,350), weight, param_circle) );
+        areas.push_back( TopGraph::Area(areas.size(), "circle", cv::Point2f(600,350), weight, param_circle) );
+
+        std::vector<float> param_rect;
+        param_rect.push_back(50);
+        param_rect.push_back(30);
+        areas.push_back( TopGraph::Area(areas.size(), "rect", cv::Point2f(380,390), weight, param_rect) );
+
+
+        theTopGraph->updateContextAreas(&areas);
+    }
 
 //    if() //new task to start
     std::vector<cv::Point3f> waypoints;
-    theTopGraph->computePath(robot_pose, cv::Point3f(590,360,-M_PI+M_PI/4), &waypoints );
+    theTopGraph->computePath(robot_pose, cv::Point3f(760,80,-M_PI+M_PI/4), &waypoints );
 
     path_to_target.insert(std::make_pair<int, std::vector<cv::Point3f> >( 1, waypoints) );
 

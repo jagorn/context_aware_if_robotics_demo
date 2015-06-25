@@ -42,6 +42,18 @@ void number(cv::Mat img, int _num, cv::Point2f _p, cv::Scalar color, cv::Point2f
     cv::putText(img,num,_p+displacement,cv::FONT_HERSHEY_SCRIPT_SIMPLEX,fontScale,color,thickness);
 }
 
+void drawCircleArea(cv::Mat img, unsigned int e_id, cv::Point2f pose, float radius, float weight)
+{
+    cv::circle( img, pose, radius, CV_RGB(255,0,0), CV_FILLED);
+    number(img, e_id, pose, cv::Scalar::all(0));
+}
+
+void drawRectArea(cv::Mat img, unsigned int e_id, cv::Point2f pose, float base, float height, float weight)
+{
+    cv::rectangle( img, pose - cv::Point2f(base/2,-height/2), pose + cv::Point2f(base/2,-height/2), CV_RGB(255,0,0), CV_FILLED);
+    number(img, e_id, pose, cv::Scalar::all(0));
+}
+
 void drawRobot(cv::Mat img, unsigned int r_id, cv::Point3f pose, cv::Scalar color)
 {
     int robot_radius = 6;
@@ -168,8 +180,6 @@ void drawTarget(cv::Mat img, unsigned int t_id, cv::Point2f pose)
     cv::circle( img, pose, 6, CV_RGB(255,255,255), CV_FILLED );
     cv::circle( img, pose, 4, CV_RGB(255,0,0), CV_FILLED );
 }
-
-
 
 void drawProxPoint(cv::Mat img, cv::Point3f pose, float arrow_module)
 {

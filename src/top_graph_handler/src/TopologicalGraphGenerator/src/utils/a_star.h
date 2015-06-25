@@ -46,14 +46,7 @@ public:
 
     AstarHandler(){}
     AstarHandler(const std::vector<Node*>& _g, const std::map<int,std::vector<int> >& _c):
-        graph(_g), connections(_c)
-    {
-        for(unsigned int i=0; i<graph.size(); ++i)
-        {
-            std::vector<float> tmp_init(graph.size(), 0.f);
-            context_costs.push_back(tmp_init);
-        }
-    }
+        graph(_g), connections(_c), context_costs(std::vector<float>(graph.size(), 0.f)) {}
     ~AstarHandler()
     {
         clear();
@@ -66,14 +59,14 @@ public:
     bool isInSet(int id, std::set<Node,Node::cmp>* _set);
     int getLowestFscoreNode();
     void retracePath(int c_id, int s_id, std::vector<int>* _path);
-    void setContextCosts(std::vector<std::vector<float> >* _ncc);
+    void setContextCosts(std::vector<float>* _ncc);
     // s_id: start node id, e_id: end node id, _path: path pointer where the path will be stored
     bool findPath(int s_id, int e_id, std::vector<int>* _path);
 
 private:
     std::vector<Node*> graph;
     std::map<int, std::vector<int> > connections;
-    std::vector<std::vector<float> > context_costs;
+    std::vector<float> context_costs;
 
 
     std::set<Node,Node::cmp> closed_set;
