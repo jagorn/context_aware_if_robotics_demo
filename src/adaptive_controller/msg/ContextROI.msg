@@ -1,8 +1,9 @@
+string id
 string shape
 bool scaled
-int centreX
-int centreY
-int range
-int side
-int height
-int weight
+int8 centreX
+int8 centreY
+int8 radius
+int8 side
+int8 height
+int8 weight

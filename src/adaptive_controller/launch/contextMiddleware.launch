@@ -1,27 +1,7 @@
 <launch>
-
- <node
-  pkg="adaptive_controller"
-  type="contextNode.py"
-  name="context_middleware"
-  output="screen"
-  respawn="true"
- />
-
- <node
-  pkg="adaptive_controller"
-  type="testInput.py"
-  name="test_context_input"
-  output="screen"
-  respawn="true"
- />
-
- <node
-  pkg="adaptive_controller"
-  type="testOutput.py"
-  name="test_context_output"
-  output="screen"
-  respawn="true"
- />
+ <arg name = "semantic_files" value = "$(find adaptive_controller)/asp/semantic_map.lp" />
+ <node pkg="adaptive_controller" type="contextNode.py" name="context_middleware" args="$(arg semantic_files)" output="screen" respawn="true"/>
+ <node pkg="adaptive_controller" type="testInput.py" name="test_context_input" output="screen" respawn="true"/>
+ <node pkg="adaptive_controller" type="testOutput.py" name="test_context_output" output="screen" respawn="true" />
 
 </launch>

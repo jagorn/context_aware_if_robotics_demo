@@ -17,14 +17,21 @@ def events():
     """
     rospy.sleep(1.5)
 
-    assertions = {'doorClosed(5,4)': True, 'doorClosed(4,5)': True}
+    assertions = {'_time(night)': True, '_person_at(nardi,4,5)': True}
     msg = context.atoms_values2in_message(assertions)
     topic.publish(msg)
     log(assertions)
 
     rospy.sleep(2.0)
 
-    assertions['doorClosed(5,4)'] = False
+    assertions = {'_time(night)': False, '_time(noon)': True}
+    msg = context.atoms_values2in_message(assertions)
+    topic.publish(msg)
+    log(assertions)
+
+    rospy.sleep(2.0)
+
+    assertions = {'_time(noon)': False, '_person_at(nardi,4,5)': False}
     msg = context.atoms_values2in_message(assertions)
     topic.publish(msg)
     log(assertions)

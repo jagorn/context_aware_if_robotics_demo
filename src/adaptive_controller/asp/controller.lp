@@ -1,13 +1,9 @@
-% FACTS
+%------ FACTS -------%
 #program base.
 
-% problem instance
-
-holds(at(sBot, 1), 0).
-
-% ROSoClingo settings
-id(1..100).
+% settings
 robot(sBot).
+id(1..100).
 value(success; failure).
 
 % actions 
@@ -20,8 +16,16 @@ state(at(Robot, Room)) :- node(Room, _, _), robot(Robot).
 context(doorClosed(A,B)) :- edge(A, B, _).
 #external _context(Context): context(Context).
 
-% TIME RULES
+
+%------- TIME RULES --------%
 #program transition(t).
+
+% actions implementation
+possible(Robot, moveTo(B), t) :- holds(at(Robot, A), t-1), edge(A, B, _), robot(Robot), not _context(doorClosed(A,B)).
+
+holds(at(Robot, B), t) :- _action(Robot, moveTo(B), t), not _value(Robot, _, failure,t).
+holds(at(Robot, B), t) :- holds(at(Robot, B), t-1), not _action(Robot, moveTo(_), t).
+holds(at(Robot, B), t) :- holds(at(Robot, B), t-1), _value(Robot, _, failure, t).
 
 % externals
 #external _request(ID, State, t): id(ID), state(State).
@@ -32,12 +36,6 @@ context(doorClosed(A,B)) :- edge(A, B, _).
 {_action(Robot, Action, t): action(Action)}1 :- robot(Robot).
 _action(Robot, Action, t) :- _value(Robot, Action, Value, t).
 :- _action(Robot, Action, t), not possible(Robot, Action, t), not _value(Robot, Action, success, t).
-
-possible(Robot, moveTo(B), t) :- holds(at(Robot, A), t-1), edge(A, B, _), robot(Robot), not _context(doorClosed(A,B)).
-
-holds(at(Robot, B), t) :- _action(Robot, moveTo(B), t), not _value(Robot, _, failure,t).
-holds(at(Robot, B), t) :- holds(at(Robot, B), t-1), not _action(Robot, moveTo(_), t).
-holds(at(Robot, B), t) :- holds(at(Robot, B), t-1), _value(Robot, _, failure, t).
 
 holds(request(ID, State), t) :- _request(ID, State, t), not _cancel(ID, t).
 holds(request(ID, State), t) :- holds(request(ID, State), t-1), not _cancel(ID, t).

@@ -63,6 +63,8 @@ add_message_files(FILES
   
   ContextInput.msg
   ContextModel.msg
+  ContextROI.msg
+  ContextROIs.msg
 )
 
 ## Generate the action lib messages

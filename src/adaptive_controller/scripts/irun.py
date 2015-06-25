@@ -19,18 +19,6 @@ import iroshandler
 import iroscontext
 
 
-def separate_parameter(inlist):
-    list = []
-    arguments = []
-    for element in inlist:
-        if element == "--files:":
-            arguments = list
-            list = []
-        else:
-            list.append(element)
-    return (arguments,list)
-
-
 def goal_to_solver(id, request, time):
     return {Fun("_request", [id, gringoParser.string2fun(request), time]): True}
 
@@ -60,26 +48,18 @@ def context_to_solver(assertions2values):
     return context
 
 # ROS node
-# Controller main node:
-# argv[1] = map_file.yaml file
-# argv[2:] = map.lp file, populated by the graph builder online
-# argv[3:] = knowledge.lp files
 rospy.init_node('ROSoClingo', argv=sys.argv, anonymous=True)
-
-map_file = sys.argv[1]
-map_out = sys.argv[2]
 
 rospack = rospkg.RosPack()
 pkg_path = rospack.get_path('adaptive_controller')
-os.system(pkg_path + "/src/topologicalGraph/bin/top_graph_gen_bin -map " + map_file + " -out " + map_out)
 
-(arguments, files) = separate_parameter(rospy.myargv(sys.argv[2:]))
+semantic_files = rospy.myargv(sys.argv[1:])
 
 handler = RosoclingoCommunication()
 publisher = rospy.Publisher(handler.out_topic, handler.out_message, latch=True, queue_size=10)
 handle_communication = iroshandler.HandleCommunication(publisher, handler.in_topic, handler.in_message, message_to_solver)
 handle_request = iroshandler.HandleRequest(handler.action_topic, handler.action, goal_to_solver, cancel_to_solver)
-handle_solver = iroshandler.HandleSolver(arguments, files, solver_to_message)
+handle_solver = iroshandler.HandleSolver(semantic_files, solver_to_message)
 handle_context = iroscontext.HandleContext(context_to_solver)
 rosoclingo = icontroller.ROSoClingo(handle_request,handle_solver, handle_communication, handle_context)
 rospy.spin()
