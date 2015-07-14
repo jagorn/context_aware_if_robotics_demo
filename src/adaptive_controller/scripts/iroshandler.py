@@ -4,6 +4,7 @@
 #  Extended and modified by Francesco Trapani
 
 import rospy
+import rospkg
 import actionlib
 import gringo
 
@@ -119,11 +120,18 @@ class HandleSolver:
     SendMessage = None
     Step = 1
 
-    def __init__(self, arguments, files, solver_to_message):
+    __planner_inferences_source = '/asp/controller.lp'
+
+    def __init__(self, semantic_files, solver_to_message):
         self.SolverToMessage = solver_to_message
-        self.Solver = gringo.Control(arguments)
-        for file in files:
-            self.Solver.load(file)
+        self.Solver = gringo.Control()
+
+        package = rospkg.RosPack()
+        inferences_file = package.get_path('adaptive_controller') + self.__planner_inferences_source
+        self.Solver.load(inferences_file)
+
+        for semantic_file in semantic_files:
+            self.Solver.load(semantic_file)
         self.Solver.ground([("base", [])])
         self.Solver.ground([("transition", [self.Step])])
         self.Solver.assign_external(gringo.Fun("horizon", [self.Step]), True)

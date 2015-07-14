@@ -15,8 +15,13 @@ class ContextCommunication:
 
     __in_topic = '/context/input'
     __out_topic = '/context/model'
+    __roi_topic = '/context/roi'
+
     __in_message = ContextInput
     __out_message = ContextModel
+    __roi_message = ContextROIs
+
+    __roi_predicate = 'context_area'
 
     @property
     def in_topic(self):
@@ -27,12 +32,21 @@ class ContextCommunication:
         return self.__out_topic
 
     @property
+    def roi_topic(self):
+        return self.__roi_topic
+
+    @property
     def in_message(self):
         return self.__in_message
 
     @property
     def out_message(self):
         return self.__out_message
+
+    @property
+    def  roi_message(self):
+        return self.__roi_message
+
 
     def atoms_values2in_message(self, atoms2values):
         """
@@ -64,7 +78,32 @@ class ContextCommunication:
         message = self.__out_message()
         message.atoms = []
         for atom in atoms:
-            message.atoms.append(atom.__str__())
+            if atom.name() != self.__roi_predicate:
+                message.atoms.append(atom.__str__())
+        return message
+
+    def atoms2roi_message(self, atoms):
+        """
+        Converts ASP assertions to ContextROIs messages
+        """
+        message = self.__roi_message()
+        message.ROIs = []
+        for atom in atoms:
+            if atom.name() == self.__roi_predicate:
+                roi = ContextROI()
+                args = atom.args()
+
+                roi.id = args[0].__str__()
+                roi.shape = args[1].__str__()
+                roi.scaled = int(args[2].__str__())
+                roi.centreX = int(args[3].__str__())
+                roi.centreY = int(args[4].__str__())
+                roi.radius = int(args[5].__str__())
+                roi.side = int(args[6].__str__())
+                roi.height = int(args[7].__str__())
+                roi.weight = int(args[8].__str__())
+
+                message.ROIs.append(roi)
         return message
 
     def out_message2atoms(self, message):

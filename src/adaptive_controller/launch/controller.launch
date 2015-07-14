@@ -1,29 +1,10 @@
 <launch>
- <arg name="map_file" default="$(find way_point_navigation)/maps/DIAG_B1.png" />
- <arg name="map_output" default="$(find adaptive_controller)/asp/map.lp" />
+ <arg name = "semantic_files" value = "$(find adaptive_controller)/asp/semantic_map.lp" />
 
- <node
-  pkg="adaptive_controller"
-  type="irun.py"
-  name="rosoclingo_controller"
-  args="$(arg map_file) $(arg map_output) $(find adaptive_controller)/asp/controller.lp"
-  output="screen"
-  required="true"
- />
+ <node pkg="adaptive_controller" type="irun.py" name="rosoclingo_controller" args="$(arg semantic_files)" output="screen" required="true"/>
 
- <node
-  pkg="adaptive_controller"
-  type="actionsFulfiller.py"
-  name="action_fulfiller"
-  output="screen"
-  respawn="true"
- />
+ <node pkg="adaptive_controller" type="actionsFulfiller.py" name="action_fulfiller" output="screen" respawn="true"/>
 
- <node
-  pkg="adaptive_controller"
-  type="minimalRequest.py"
-  output="screen"
-  name="task_requester"
- />
+ <node pkg="adaptive_controller" type="minimalRequest.py" output="screen" name="task_requester"/>
 
 </launch>

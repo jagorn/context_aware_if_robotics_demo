@@ -15,15 +15,16 @@ import contextCommunication
 
 class ContextMiddleware:
 
-    __context_source = '/asp/context.lp'
+    __context_inferences_source = '/asp/context.lp'
     __communication = None
-    __publisher = None
+    __model_publisher = None
+    __roi_publisher = None
     __solver = None
     __future = None
     __interrupted = None
     __model = []
 
-    def __init__(self):
+    def __init__(self, semantic_files):
         """
         Class inizialization.
         The solver is initialized and the static knowledge is loaded from a file.
@@ -31,16 +32,20 @@ class ContextMiddleware:
         self.__communication = contextCommunication.ContextCommunication()
 
         package = rospkg.RosPack()
-        context_path = package.get_path('adaptive_controller') + self.__context_source
+        context_path = package.get_path('adaptive_controller') + self.__context_inferences_source
 
         self.__solver = gringo.Control()
         self.__solver.load(context_path)
+        for semantic_file in semantic_files:
+            self.__solver.load(semantic_file)
         self.__solver.ground([("base", [])])
 
         self.__future = self.__solver.solve_async(None, self.__on_model, self.__on_finish)
         self.__future.wait()
 
-        self.__publisher = rospy.Publisher(self.__communication.out_topic, self.__communication.out_message, latch=True, queue_size=10)
+        self.__model_publisher = rospy.Publisher(self.__communication.out_topic, self.__communication.out_message, latch=True, queue_size=10)
+        self.__roi_publisher = rospy.Publisher(self.__communication.roi_topic, self.__communication.roi_message, latch=True, queue_size=10)
+
         rospy.Subscriber(self.__communication.in_topic, self.__communication.in_message, self.__on_received_context)
 
     def __on_received_context(self, input_msg):
@@ -72,11 +77,14 @@ class ContextMiddleware:
         """
         Publishes a message with all the assertions contained in the new current context model
         """
-        context_msg = self.__communication.atoms2out_message(self.__model)
-        self.__publisher.publish(context_msg)
+        model_msg = self.__communication.atoms2out_message(self.__model)
+        roi_msg = self.__communication.atoms2roi_message(self.__model)
+
+        self.__model_publisher.publish(model_msg)
+        self.__roi_publisher.publish(roi_msg)
 
         # ROS log
-        log_message = "ContextMiddleWare - model published:\n"
+        log_message = "ContextMiddleWare - current model:\n"
         for atom in self.__model:
             log_message += atom.__str__() + "\n"
         rospy.loginfo(log_message)
