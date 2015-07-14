@@ -1,0 +1,12 @@
+<launch>
+    <arg name="robot_name" default="robot0"/>
+
+	<group ns="$(arg robot_name)">
+
+		<node name="people_detector" pkg="people_detector" type="people_detector" >
+			<param name="robot_name" value="$(arg robot_name)"/>
+		</node>
+
+	</group>
+
+</launch>
