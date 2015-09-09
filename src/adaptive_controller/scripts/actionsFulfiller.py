@@ -9,10 +9,6 @@
 import rospy
 from rosoclingoCommunication import RosoclingoCommunication
 
-__communication = RosoclingoCommunication()
-__topic = rospy.Publisher(__communication.in_topic, __communication.in_message, latch=True, queue_size=10)
-
-
 def __on_action_request(message):
     """
     Callback for ActionRequest messages reception:
@@ -31,6 +27,10 @@ def __on_action_request(message):
     rospy.loginfo("ActionsFulfiller - action %s:%s executed successfully\n", message.robot, message.action)
 
 # ROS node
+robot_name = rospy.get_param("robot_name", "robot0")
+__communication = RosoclingoCommunication(robot_name)
+__topic = rospy.Publisher(__communication.in_topic, __communication.in_message, latch=True, queue_size=10)
+
 rospy.init_node('ActionsFulfiller')
 rospy.Subscriber(__communication.out_topic, __communication.out_message, __on_action_request)
 rospy.spin()

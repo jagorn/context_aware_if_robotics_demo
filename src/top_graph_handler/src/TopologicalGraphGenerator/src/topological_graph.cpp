@@ -27,15 +27,10 @@ void TopGraph::vis(cv::Mat vis)
     for(unsigned int i=0; i< graph.size(); ++i)
     {
         for(unsigned int e=0; e<graph.at(i)->edges.size(); ++e)
-            cv::line(vis, graph.at(i)->pos, graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos, CV_RGB(0,255,0), 1);
+            cv::line(vis, graph.at(i)->pos, graph.at(graph.at(i)->edges.at(e)->end_point_id)->pos, CV_RGB(0,180,0), 1);
 
-        cv::circle( vis, graph.at(i)->pos, 3, CV_RGB(0,0,255), CV_FILLED );
+        cv::circle( vis, graph.at(i)->pos, 3, CV_RGB(0,80,0), CV_FILLED );
     }
-
-//    std::vector<cv::Point3f> waypoints;
-//    computePath(cv::Point3f(300,480,-M_PI/2), cv::Point3f(740,80,-M_PI+M_PI/4), &waypoints );
-//    Utils::drawPath(vis, &waypoints, CV_RGB(255,0,0), 1);
-//    cv::imshow("vis",vis);
 }
 
 void TopGraph::generateFileLP()
@@ -126,7 +121,7 @@ void TopGraph::generateDenseGraph()
 
 void TopGraph::updateContextCosts(std::vector<float>* costs_weights)
 {
-    astar_handler->setContextCosts(costs_weights);
+    astar_handler->setContextMultipliers(costs_weights);
 }
 
 void TopGraph::updateContextAreas(std::vector<Area>* _areas)
@@ -144,7 +139,7 @@ void TopGraph::updateContextAreas(std::vector<Area>* _areas)
         {
             if(areas.at(a).label == "rect")
             {
-
+                // for rects weight are just equals for all the nodes inside the rect
                 if( std::fabs(graph.at(n)->pos.x - areas.at(a).centroid.x) < areas.at(a).params.at(0)/2 &&
                         std::fabs(graph.at(n)->pos.y - areas.at(a).centroid.y) < areas.at(a).params.at(1)/2 )
                     additional_costs.at(n) += areas.at(a).weight;
@@ -152,8 +147,11 @@ void TopGraph::updateContextAreas(std::vector<Area>* _areas)
 
             if(areas.at(a).label == "circle")
             {
-                if(norm(graph.at(n)->pos - areas.at(a).centroid) < areas.at(a).params.at(0))
-                    additional_costs.at(n) += areas.at(a).weight;
+                // for circle weights are inversely proportional to the distance from the centre
+                float normalized_distance = norm(graph.at(n)->pos - areas.at(a).centroid) / areas.at(a).params.at(0);
+                if(normalized_distance < 1) {
+                    additional_costs.at(n) += (areas.at(a).weight * normalized_distance);
+                }
             }
         }
     }

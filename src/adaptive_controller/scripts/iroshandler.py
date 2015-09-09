@@ -175,7 +175,6 @@ class HandleSolver:
         rospy.loginfo(log_message)
 
         while self.Future.get() == gringo.SolveResult.UNSAT and self.interrupted is False:
-
             self.Step += 1
             parts.append(("transition", [self.Step]))
             if self.Step > 1:
@@ -197,7 +196,6 @@ class HandleSolver:
             for atom in self.Shown:
                 log_message += atom.__str__() + "\n"
             log_message += "actions found:\n"
-
             for atom in self.Atoms:
                 if atom.name() == "_request" and atom.args()[-1] == self.GetTime():
                     self.HandleGoal(atom.args()[0], "accept")

@@ -30,28 +30,30 @@ void arrow(cv::Mat img, int x, int y, int u, int v, cv::Scalar color, int size, 
     }
 }
 
-void number(cv::Mat img, int _num, cv::Point2f _p, cv::Scalar color, cv::Point2f displacement)
+void text(cv::Mat img, std::string _text, cv::Point2f _p, cv::Scalar color, cv::Point2f displacement)
 {
-    std::stringstream ss;
-    ss << _num;
-    std::string num = ss.str();
-
     float fontScale = 0.3f;
     int thickness = 1;
 
-    cv::putText(img,num,_p+displacement,cv::FONT_HERSHEY_SCRIPT_SIMPLEX,fontScale,color,thickness);
+    cv::putText(img,_text,_p+displacement,cv::FONT_HERSHEY_SCRIPT_SIMPLEX,fontScale,color,thickness);
 }
 
-void drawCircleArea(cv::Mat img, unsigned int e_id, cv::Point2f pose, float radius, float weight)
+void drawCircleArea(cv::Mat img, std::string e_id, cv::Point2f pose, float radius, float weight)
 {
-    cv::circle( img, pose, radius, CV_RGB(255,0,0), CV_FILLED);
-    number(img, e_id, pose, cv::Scalar::all(0));
+    float green = 255 * (1 - weight/10.0);
+    float red = 255;
+    float blue = 50;
+    cv::circle( img, pose, radius, CV_RGB(int(red),int(green),int(blue)), CV_FILLED);
+    text(img, e_id, pose, cv::Scalar::all(0));
 }
 
-void drawRectArea(cv::Mat img, unsigned int e_id, cv::Point2f pose, float base, float height, float weight)
+void drawRectArea(cv::Mat img, std::string e_id, cv::Point2f pose, float base, float height, float weight)
 {
-    cv::rectangle( img, pose - cv::Point2f(base/2,-height/2), pose + cv::Point2f(base/2,-height/2), CV_RGB(255,0,0), CV_FILLED);
-    number(img, e_id, pose, cv::Scalar::all(0));
+    float green = 255 * (1 - weight/10.0);
+    float red = 255;
+    float blue = 50;
+    cv::rectangle( img, pose - cv::Point2f(base/2,-height/2), pose + cv::Point2f(base/2,-height/2), CV_RGB(int(red),int(green),int(blue)), 4);
+    text(img, e_id, pose, cv::Scalar::all(0));
 }
 
 void drawRobot(cv::Mat img, unsigned int r_id, cv::Point3f pose, cv::Scalar color)
@@ -71,7 +73,12 @@ void drawRobot(cv::Mat img, unsigned int r_id, cv::Point3f pose, cv::Scalar colo
 
     cv::circle( img, r_rot, (robot_radius/3) +1, cv::Scalar::all(0), CV_FILLED);
     cv::circle( img, r_rot, robot_radius/3, CV_RGB(255,255,0), CV_FILLED);
-    number(img, r_id, r_pos, cv::Scalar::all(0));
+
+    std::stringstream ss;
+    ss << r_id;
+    std::string string_id = ss.str();
+
+    text(img, string_id, r_pos, cv::Scalar::all(0));
 }
 
 void drawPath(cv::Mat img, std::vector<cv::Point3f>* path, cv::Scalar color, float thickness)
@@ -99,13 +106,17 @@ void drawPath(cv::Mat img, std::vector<cv::Point3f>* path, cv::Scalar color, flo
             if(tn == (path->size()-1))
                 cv::circle( img, p2, 2, CV_RGB(0,0,255), CV_FILLED );
 
-            cv::line( img, p1, p2, color, thickness, 1 );
+            cv::line( img, p1, p2, CV_RGB(100,50,0), 3, 1 );
         }
     }
 }
 
 void drawTask(cv::Mat img, unsigned int t_id, cv::Scalar color, std::vector<cv::Point3f>* path, float thickness)
 {
+    std::stringstream ss;
+    ss << t_id;
+    std::string string_id = ss.str();
+
     if(path->size() == 1)
     {
         cv::Point2f p;
@@ -113,7 +124,7 @@ void drawTask(cv::Mat img, unsigned int t_id, cv::Scalar color, std::vector<cv::
         p.y = path->at(0).y;
 
         cv::circle( img, p, 5, color, CV_FILLED );
-        number(img, t_id, p, cv::Scalar::all(0));
+        text(img, string_id, p, cv::Scalar::all(0));
     }
     else
     {
@@ -129,7 +140,7 @@ void drawTask(cv::Mat img, unsigned int t_id, cv::Scalar color, std::vector<cv::
             if(tn == (path->size()-1))
             {
                 cv::circle( img, p2, 5, color, CV_FILLED );
-                number(img, t_id, p2, cv::Scalar::all(0));
+                text(img, string_id, p2, cv::Scalar::all(0));
             }
 
             cv::line( img, p1, p2, color, thickness, 1 );
@@ -154,9 +165,14 @@ void drawDoor(cv::Mat img, unsigned int d_id, cv::Point3f pose, cv::Scalar color
         d_pos_upper.x = pose.x+10;
         d_pos_upper.y = pose.y+10;
     }
+
+    std::stringstream ss;
+    ss << d_id;
+    std::string string_id = ss.str();
+
     cv::rectangle( img, d_pos_lower, d_pos_upper, cv::Scalar::all(0), CV_FILLED);
     cv::rectangle( img, d_pos_lower+cv::Point2f(1,1), d_pos_upper+cv::Point2f(-1,-1), color, CV_FILLED);
-    number(img, d_id, d_pos_upper, cv::Scalar::all(255), cv::Point2f(-10,-1));
+    text(img, string_id, d_pos_upper, cv::Scalar::all(255), cv::Point2f(-10,-1));
 }
 
 void drawEvent(cv::Mat img, unsigned int e_id, cv::Point2f pose, cv::Scalar color)
@@ -169,8 +185,11 @@ void drawEvent(cv::Mat img, unsigned int e_id, cv::Point2f pose, cv::Scalar colo
     for(float i=1; i<360; i+=2*angle)
         cv::ellipse(img, pose, cv::Size(8,8), 0, i+5, i+angle-5, color, -1, CV_AA);
 
+    std::stringstream ss;
+    ss << e_id;
+    std::string string_id = ss.str();
 
-    number(img, e_id, pose, cv::Scalar::all(255), cv::Point2f(0,-20));
+    text(img, string_id, pose, cv::Scalar::all(255), cv::Point2f(0,-20));
 }
 
 void drawTarget(cv::Mat img, unsigned int t_id, cv::Point2f pose)

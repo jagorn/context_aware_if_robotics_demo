@@ -64,13 +64,7 @@ bool AstarHandler::isInSet(int id, std::set<Node,Node::cmp>* _set)
 
 float AstarHandler::heuristicCostEstimate(Node* ni, Node* ne)
 {
-
-#ifdef EUCLEDIAN_DISTANCE
-    // eucledian distance
     return Utils::norm2D(ni->pos, ne->pos);
-#else
-    return Utils::norm2D(ni->pos, ne->pos) + context_costs.at(ni->id);
-#endif
 }
 
 int AstarHandler::getLowestFscoreNode()
@@ -106,10 +100,10 @@ void AstarHandler::retracePath(int c_id, int s_id, std::vector<int>* _path)
      std::reverse(_path->begin(), _path->end());
 }
 
-void AstarHandler::setContextCosts(std::vector<float> *_ncc)
+void AstarHandler::setContextMultipliers(std::vector<float> *_ncc)
 {
     for(unsigned int i=0; i<_ncc->size(); ++i)
-            context_costs.at(i) = _ncc->at(i);
+            context_multipliers.at(i) = _ncc->at(i);
 }
 
 bool AstarHandler::findPath(int s_id, int e_id, std::vector<int>* _path)
@@ -147,7 +141,7 @@ bool AstarHandler::findPath(int s_id, int e_id, std::vector<int>* _path)
                 if(isInSet(connections[current.id].at(n), &closed_set)) continue;
 
                 float tmp_g_score = current.g_score +
-                        Utils::norm2D(current.pos, graph.at(connections[current.id].at(n))->pos);
+                        Utils::norm2D(current.pos, graph.at(connections[current.id].at(n))->pos)  * (1 + context_multipliers.at(current.id));
 
                 // expansion step
                 if( !isInSet(connections[current.id].at(n), &open_set) ||

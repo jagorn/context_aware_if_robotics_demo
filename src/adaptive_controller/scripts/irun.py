@@ -52,14 +52,15 @@ rospy.init_node('ROSoClingo', argv=sys.argv, anonymous=True)
 
 rospack = rospkg.RosPack()
 pkg_path = rospack.get_path('adaptive_controller')
-
 semantic_files = rospy.myargv(sys.argv[1:])
 
-handler = RosoclingoCommunication()
+robot_name = rospy.get_param("robot_name", "robot0")
+handler = RosoclingoCommunication(robot_name)
+
 publisher = rospy.Publisher(handler.out_topic, handler.out_message, latch=True, queue_size=10)
 handle_communication = iroshandler.HandleCommunication(publisher, handler.in_topic, handler.in_message, message_to_solver)
 handle_request = iroshandler.HandleRequest(handler.action_topic, handler.action, goal_to_solver, cancel_to_solver)
 handle_solver = iroshandler.HandleSolver(semantic_files, solver_to_message)
-handle_context = iroscontext.HandleContext(context_to_solver)
+handle_context = iroscontext.HandleContext(robot_name, context_to_solver)
 rosoclingo = icontroller.ROSoClingo(handle_request,handle_solver, handle_communication, handle_context)
 rospy.spin()

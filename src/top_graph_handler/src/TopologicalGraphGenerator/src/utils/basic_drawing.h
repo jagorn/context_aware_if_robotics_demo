@@ -3,6 +3,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <cmath>
+#include <iostream>
 
 namespace Utils
 {
@@ -14,11 +15,11 @@ static float ARROW_MODULE = 8;
 
 void arrow(cv::Mat img, int x, int y, int u, int v, cv::Scalar color, int size, int thickness);
 
-void number(cv::Mat img, int _num, cv::Point2f _p, cv::Scalar color = CV_RGB(0,0,0), cv::Point2f displacement=cv::Point2f(-10,-5));
+void text(cv::Mat img, std::string _text, cv::Point2f _p, cv::Scalar color = CV_RGB(0,0,0), cv::Point2f displacement=cv::Point2f(-10,-5));
 
-void drawCircleArea(cv::Mat img, unsigned int e_id, cv::Point2f pose, float radius, float weight);
+void drawCircleArea(cv::Mat img, std::string e_id, cv::Point2f pose, float radius, float weight);
 
-void drawRectArea(cv::Mat img, unsigned int e_id, cv::Point2f pose, float base, float height, float weight);
+void drawRectArea(cv::Mat img, std::string e_id, cv::Point2f pose, float base, float height, float weight);
 
 void drawPath(cv::Mat img, std::vector<cv::Point3f>* path, cv::Scalar color = CV_RGB(0,255,0), float thickness = 1.f);
 

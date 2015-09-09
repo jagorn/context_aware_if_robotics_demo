@@ -25,13 +25,13 @@ public:
     class Area
     {
     public:
-        int id;
+        std::string id;
         std::string label;
         cv::Point2f centroid;
         float weight;
         std::vector<float> params;
 
-        Area(int _i, std::string _l, cv::Point2f _c, float _w, std::vector<float> _p):
+        Area(std::string _i, std::string _l, cv::Point2f _c, float _w, std::vector<float> _p):
             id(_i), label(_l), centroid(_c), weight(_w), params(_p){}
         Area(const Area& a)
         {

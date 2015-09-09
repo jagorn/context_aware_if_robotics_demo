@@ -1,22 +1,42 @@
-%------ FACTS -------%
+% FACTS
 #program base.
 
-% settings
-robot(robot0).
+% problem instance
+room(1..5).
+
+door(1, 5).
+door(1, 2).
+
+door(2, 1).
+door(2, 3).
+
+door(3, 2).
+door(3, 4).
+
+door(4, 3).
+door(4, 5).
+
+door(5, 4).
+door(5, 1).
+
+holds(at(sBot, 1), 0).
+
+% ROSoClingo settings
 id(1..100).
+robot(sBot).
 value(success; failure).
 
-% actions 
-action(goTo(X, Y)) :- xCoord(X), yCoord(Y).
+% actions
+action(moveTo(Room)) :- room(Room).
 
 % situations
-state(at(Robot, Region)) :- region(Region, _, _, _, _, _), robot(Robot).
-state(at(Robot, Item)) :- item(Item, _, _), robot(Robot).
+state(at(Robot, Room)) :- room(Room), robot(Robot).
 
 % context
+context(doorClosed(A,B)) :- door(A, B).
 #external _context(Context): context(Context).
 
-%------- TIME RULES --------%
+% TIME RULES
 #program transition(t).
 
 % externals
@@ -26,14 +46,13 @@ state(at(Robot, Item)) :- item(Item, _, _), robot(Robot).
 
 % situation calculus
 {_action(Robot, Action, t): action(Action)}1 :- robot(Robot).
-_action(Robot, Action, t) :- _value(Robot, Action, success, t).
+_action(Robot, Action, t) :- _value(Robot, Action, Value, t).
 :- _action(Robot, Action, t), not possible(Robot, Action, t), not _value(Robot, Action, success, t).
 
-possible(Robot, goTo(X, Y), t) :- robot(Robot), xCoord(X), yCoord(Y).
+possible(Robot, moveTo(B), t) :- holds(at(Robot, A), t-1), door(A, B), robot(Robot), not _context(doorClosed(A,B)).
 
-holds(at(Robot, B), t) :- item(B, X, Y), _action(Robot, goTo(X, Y), t), not _value(Robot, _, failure,t).
-holds(at(Robot, B), t) :- region(B, _, X, Y, _, _), _action(Robot, goTo(X, Y), t), not _value(Robot, _, failure,t).
-holds(at(Robot, B), t) :- holds(at(Robot, B), t-1), not _action(Robot, goTo(_), t).
+holds(at(Robot, B), t) :- _action(Robot, moveTo(B), t), not _value(Robot, _, failure,t).
+holds(at(Robot, B), t) :- holds(at(Robot, B), t-1), not _action(Robot, moveTo(_), t).
 holds(at(Robot, B), t) :- holds(at(Robot, B), t-1), _value(Robot, _, failure, t).
 
 holds(request(ID, State), t) :- _request(ID, State, t), not _cancel(ID, t).

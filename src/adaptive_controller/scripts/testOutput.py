@@ -35,7 +35,9 @@ def on_received_rois(message):
 if __name__ == '__main__':
     try:
         rospy.init_node('context_output')
-        context = ContextCommunication()
+        robot_name = rospy.get_param("robot_name", "robot0")
+
+        context = ContextCommunication(robot_name)
         rospy.Subscriber(context.out_topic, context.out_message, on_received_model)
         rospy.Subscriber(context.roi_topic, context.roi_message, on_received_rois)
 

@@ -12,7 +12,6 @@ import rospkg
 import gringo
 import contextCommunication
 
-
 class ContextMiddleware:
 
     __context_inferences_source = '/asp/context.lp'
@@ -24,12 +23,12 @@ class ContextMiddleware:
     __interrupted = None
     __model = []
 
-    def __init__(self, semantic_files):
+    def __init__(self, robot_name, semantic_files):
         """
         Class inizialization.
         The solver is initialized and the static knowledge is loaded from a file.
         """
-        self.__communication = contextCommunication.ContextCommunication()
+        self.__communication = contextCommunication.ContextCommunication(robot_name)
 
         package = rospkg.RosPack()
         context_path = package.get_path('adaptive_controller') + self.__context_inferences_source

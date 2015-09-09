@@ -18,8 +18,8 @@ class HandleContext:
     __communication = None
     __context_model = []
 
-    def __init__(self, context_to_solver):
-        self.__communication = ContextCommunication()
+    def __init__(self, robot_name, context_to_solver):
+        self.__communication = ContextCommunication(robot_name)
         self.__context_to_solver = context_to_solver
 
     def start(self, set_externals):

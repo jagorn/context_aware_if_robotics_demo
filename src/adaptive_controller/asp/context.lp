@@ -10,27 +10,29 @@ light(dark).
 light(bright).
 
 person(nardi).
+person(student).
+person(unkown).
 
 % Context Rules
 
 _light(dark) :- _time(night).
 
-people_influence_radius(10) :- _light(dark).
-people_influence_radius(5) :- not _light(dark).
+people_influence_radius(2) :- _light(dark).
+people_influence_radius(1) :- not _light(dark).
 
-people_influence_value(10).
+people_influence_value(100).
 
-region_influence_value(cafeteria, 3) :- _time(morning).
-region_influence_value(corridor, 2) :- _time(morning).
-region_influence_value(office, 7) :- _time(morning).
+region_influence_value(cafeteria, 15) :- _time(morning).
+region_influence_value(corridor, 10) :- _time(morning).
+region_influence_value(office, 40) :- _time(morning).
 
-region_influence_value(cafeteria, 8) :- _time(noon).
-region_influence_value(corridor, 5) :- _time(noon).
-region_influence_value(office, 1) :- _time(noon).
+region_influence_value(cafeteria, 50) :- _time(noon).
+region_influence_value(corridor, 25) :- _time(noon).
+region_influence_value(office, 5) :- _time(noon).
 
-region_influence_value(cafeteria, 1) :- _time(afternoon).
-region_influence_value(corridor, 5) :- _time(afternoon).
-region_influence_value(office, 4) :- _time(afternoon).
+region_influence_value(cafeteria, 10) :- _time(afternoon).
+region_influence_value(corridor, 40) :- _time(afternoon).
+region_influence_value(office, 20) :- _time(afternoon).
 
 % context_area(shape, isScaled, CentreX, CentreY, Radius[only cicle], Side[rect only], Height[rect only], Weight)
 context_area(ID, circle, 1, CX, CY, R, 0, 0, W) :- _person_at(ID, CX, CY), people_influence_radius(R), people_influence_value(W).

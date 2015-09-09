@@ -34,7 +34,7 @@ double deg2rad(double d);
 
 double rad2deg(double d);
 
-std::string to_string(float number);
+std::string to_string(float text);
 
 }
 

@@ -41,3 +41,11 @@ class RosoclingoCommunication:
     @property
     def out_message(self):
         return self.__out_message
+
+    def __init__(self, robot_name):
+        """
+        Topic names are always preceded by the robot name
+        """
+        self.__in_topic = "/" + robot_name  + self.__in_topic
+        self.__out_topic = "/" + robot_name + self.__out_topic
+        self.__action_topic = "/" + robot_name + self.__action_topic

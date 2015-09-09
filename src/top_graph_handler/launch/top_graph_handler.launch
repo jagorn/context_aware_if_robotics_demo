@@ -3,7 +3,7 @@
 	<arg name="out_lp_file" default="test.lp" />
 	
 	<group ns="$(arg robot_name)">
-		<node name="top_graph_handler" pkg="top_graph_handler" type="top_graph_handler"> 
+		<node name="top_graph_handler" pkg="top_graph_handler" type="top_graph_handler" output="screen"> 
 			<param name="robot_name" value="$(arg robot_name)"/>
 			<param name="out_lp_file" value="$(arg out_lp_file)"/>
 			

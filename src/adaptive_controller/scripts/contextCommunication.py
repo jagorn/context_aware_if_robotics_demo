@@ -13,9 +13,10 @@ from adaptive_controller.msg import *
 
 class ContextCommunication:
 
+    # topics name are preceded by the robot name
     __in_topic = '/context/input'
     __out_topic = '/context/model'
-    __roi_topic = '/context/roi'
+    __roi_topic = '/context/ROIs'
 
     __in_message = ContextInput
     __out_message = ContextModel
@@ -46,6 +47,14 @@ class ContextCommunication:
     @property
     def  roi_message(self):
         return self.__roi_message
+
+    def __init__(self, robot_name):
+        """
+        Topic names are always preceded by the robot name
+        """
+        self.__in_topic = "/" + robot_name  + self.__in_topic
+        self.__out_topic = "/" + robot_name + self.__out_topic
+        self.__roi_topic = "/" + robot_name + self.__roi_topic
 
 
     def atoms_values2in_message(self, atoms2values):
